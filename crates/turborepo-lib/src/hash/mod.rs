@@ -41,6 +41,7 @@ mod proto_capnp {
     }
 }
 
+#[derive(Debug)]
 pub struct TaskHashable<'a> {
     // hashes
     pub(crate) global_hash: &'a str,
