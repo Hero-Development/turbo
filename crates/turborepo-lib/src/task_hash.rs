@@ -4,6 +4,7 @@ use std::{
 };
 
 use rayon::prelude::*;
+use serde::Serialize;
 use thiserror::Error;
 use tracing::debug;
 use turbopath::{AbsoluteSystemPath, AnchoredSystemPath, AnchoredSystemPathBuf};
