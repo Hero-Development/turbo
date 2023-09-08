@@ -16,7 +16,7 @@ use crate::{
         RunCache,
     },
     task_hash,
-    task_hash::{PackageInputsHashes, TaskHasher},
+    task_hash::{PackageInputsHashes, TaskHashTracker, TaskHasher},
 };
 
 // This holds the whole world
@@ -171,6 +171,10 @@ impl<'a> Visitor<'a> {
         }
 
         Ok(())
+    }
+
+    pub fn into_task_hash_tracker(self) -> TaskHashTracker {
+        self.task_hasher.into_task_hash_tracker()
     }
 }
 

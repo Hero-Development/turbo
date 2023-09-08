@@ -298,8 +298,6 @@ impl<'a> TaskHasher<'a> {
             dot_env: &task_definition.dot_env,
         };
 
-        println!("task hashable: {:#?}", task_hashable);
-
         let task_hash = task_hashable.hash();
 
         let mut task_hash_tracker = self.task_hash_tracker.lock().map_err(|_| Error::Mutex)?;
@@ -349,5 +347,9 @@ impl<'a> TaskHasher<'a> {
         dependency_hash_list.sort();
 
         Ok(dependency_hash_list)
+    }
+
+    pub fn into_task_hash_tracker(self) -> TaskHashTracker {
+        self.task_hash_tracker.into_inner().unwrap()
     }
 }

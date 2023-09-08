@@ -34,17 +34,17 @@ use crate::{
     package_json::PackageJson,
     run::global_hash::get_global_hash_inputs,
     task_graph::Visitor,
-    task_hash::PackageInputsHashes,
+    task_hash::{PackageInputsHashes, TaskHashTracker},
 };
 
 #[derive(Debug)]
-pub struct Run {
-    base: CommandBase,
+pub struct Run<'a> {
+    base: &'a CommandBase,
     processes: Manager,
 }
 
-impl Run {
-    pub fn new(base: CommandBase) -> Self {
+impl<'a> Run<'a> {
+    pub fn new(base: &'a CommandBase) -> Self {
         let processes = Manager::new();
         Self { base, processes }
     }
@@ -311,6 +311,18 @@ impl Run {
 
         let global_hash = global_hash_inputs.calculate_global_hash_from_inputs();
 
+        let repo_config = self.base.repo_config()?;
+        let team_id = repo_config.team_id();
+        let team_slug = repo_config.team_slug();
+
+        let token = self.base.user_config()?.token();
+
+        let api_auth = team_id.zip(token).map(|(team_id, token)| APIAuth {
+            team_id: team_id.to_string(),
+            token: token.to_string(),
+            team_slug: team_slug.map(|s| s.to_string()),
+        });
+
         let engine = EngineBuilder::new(
             &self.base.repo_root,
             &pkg_dep_graph,
@@ -341,7 +353,7 @@ impl Run {
 
         let package_inputs_hashes = PackageInputsHashes::calculate_file_hashes(
             scm,
-            engine.tasks(),
+            engine.tasks().par_bridge(),
             pkg_dep_graph.workspaces().collect(),
             engine.task_definitions(),
             &self.base.repo_root,
@@ -349,8 +361,28 @@ impl Run {
 
         let pkg_dep_graph = Arc::new(pkg_dep_graph);
         let engine = Arc::new(engine);
+
+        let async_cache = AsyncCache::new(
+            &opts.cache_opts,
+            &self.base.repo_root,
+            self.base.api_client()?,
+            api_auth,
+        )?;
+
+        let color_selector = ColorSelector::default();
+
+        let runcache = Arc::new(RunCache::new(
+            async_cache,
+            &self.base.repo_root,
+            &opts.runcache_opts,
+            color_selector,
+            None,
+            self.base.ui,
+        ));
+
         let visitor = Visitor::new(
             pkg_dep_graph.clone(),
+            runcache,
             &opts,
             package_inputs_hashes,
             &env_at_execution_start,
