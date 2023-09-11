@@ -1,4 +1,4 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::{BTreeMap, HashMap, HashSet};
 
 use anyhow::Result;
 use globwalk::WalkType;
@@ -28,7 +28,7 @@ enum GlobalHashError {}
 #[derive(Debug, Default)]
 pub struct GlobalHashableInputs<'a> {
     global_cache_key: &'static str,
-    global_file_hash_map: HashMap<RelativeUnixPathBuf, String>,
+    global_file_hash_map: BTreeMap<RelativeUnixPathBuf, String>,
     root_external_dependencies_hash: String,
     env: &'a [String],
     // Only Option to allow #[derive(Default)]
@@ -41,6 +41,7 @@ pub struct GlobalHashableInputs<'a> {
 
 #[allow(clippy::too_many_arguments)]
 pub fn get_global_hash_inputs<'a, L: ?Sized + Lockfile>(
+    single_package: bool,
     root_workspace: &WorkspaceInfo,
     root_path: &AbsoluteSystemPath,
     package_manager: &PackageManager,
@@ -102,7 +103,12 @@ pub fn get_global_hash_inputs<'a, L: ?Sized + Lockfile>(
         global_file_hash_map.extend(dot_env_object);
     }
 
-    let root_external_dependencies_hash = root_workspace.get_external_deps_hash();
+    let root_external_dependencies_hash = if single_package {
+        // This is the existing Go behavior
+        String::new()
+    } else {
+        root_workspace.get_external_deps_hash()
+    };
 
     debug!(
         "rust external deps hash: {}",
@@ -152,6 +158,11 @@ impl<'a> GlobalHashableInputs<'a> {
             framework_inference: self.framework_inference,
             dot_env: self.dot_env,
         };
+
+        println!(
+            "rust global hashable: {}",
+            serde_json::to_string_pretty(&global_hashable).unwrap()
+        );
 
         global_hashable.hash()
     }

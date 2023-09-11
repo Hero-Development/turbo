@@ -6,9 +6,10 @@
 
 mod traits;
 
-use std::collections::HashMap;
+use std::collections::{BTreeMap, HashMap};
 
 use capnp::message::{Builder, HeapAllocator};
+use serde::Serialize;
 pub use traits::TurboHash;
 use turborepo_env::ResolvedEnvMode;
 
@@ -63,10 +64,10 @@ pub struct TaskHashable<'a> {
     pub(crate) dot_env: &'a [turbopath::RelativeUnixPathBuf],
 }
 
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
 pub struct GlobalHashable<'a> {
     pub global_cache_key: &'static str,
-    pub global_file_hash_map: HashMap<turbopath::RelativeUnixPathBuf, String>,
+    pub global_file_hash_map: BTreeMap<turbopath::RelativeUnixPathBuf, String>,
     pub root_external_dependencies_hash: String,
     pub env: &'a [String],
     pub resolved_env_vars: Vec<String>,
@@ -79,7 +80,7 @@ pub struct GlobalHashable<'a> {
 pub struct LockFilePackages(pub Vec<turborepo_lockfiles::Package>);
 
 #[derive(Debug, Clone)]
-pub struct FileHashes(pub HashMap<turbopath::RelativeUnixPathBuf, String>);
+pub struct FileHashes(pub BTreeMap<turbopath::RelativeUnixPathBuf, String>);
 
 impl From<TaskOutputs> for Builder<HeapAllocator> {
     fn from(value: TaskOutputs) -> Self {
@@ -335,11 +336,12 @@ impl<'a> From<GlobalHashable<'a>> for Builder<HeapAllocator> {
             }
         }
 
-        builder.set_env_mode(match hashable.env_mode {
+        let env_mode = match hashable.env_mode {
             EnvMode::Infer => proto_capnp::global_hashable::EnvMode::Infer,
             EnvMode::Loose => proto_capnp::global_hashable::EnvMode::Loose,
             EnvMode::Strict => proto_capnp::global_hashable::EnvMode::Strict,
-        });
+        };
+        builder.set_env_mode(env_mode);
 
         builder.set_framework_inference(hashable.framework_inference);
 

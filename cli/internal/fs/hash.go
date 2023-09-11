@@ -3,6 +3,7 @@ package fs
 import (
 	"crypto/sha1"
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	"io"
 	"strconv"
@@ -37,6 +38,8 @@ func HashTask(task *hash.TaskHashable) (string, error) {
 
 // HashGlobal produces the global hash value to be incorporated in every task hash
 func HashGlobal(global hash.GlobalHashable) (string, error) {
+	v, _ := json.MarshalIndent(global, "", "  ")
+	fmt.Printf("Go global hashable: %s\n", string(v))
 	return hash.HashGlobalHashable(&global)
 }
 

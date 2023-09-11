@@ -204,6 +204,7 @@ impl<'a> Run<'a> {
             .expect("must have root workspace");
 
         let global_hash_inputs = get_global_hash_inputs(
+            opts.run_opts.single_package,
             root_workspace,
             &self.base.repo_root,
             pkg_dep_graph.package_manager(),
@@ -291,6 +292,7 @@ impl<'a> Run<'a> {
             .expect("must have root workspace");
 
         let global_hash_inputs = get_global_hash_inputs(
+            opts.run_opts.single_package,
             root_workspace,
             &self.base.repo_root,
             pkg_dep_graph.package_manager(),

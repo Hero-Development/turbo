@@ -31,6 +31,7 @@ struct PnpmWorkspace {
 
 #[derive(Debug, Deserialize)]
 struct PackageJsonWorkspaces {
+    #[serde(default)]
     workspaces: Workspaces,
 }
 
@@ -39,6 +40,12 @@ struct PackageJsonWorkspaces {
 enum Workspaces {
     TopLevel(Vec<String>),
     Nested { packages: Vec<String> },
+}
+
+impl Default for Workspaces {
+    fn default() -> Self {
+        Workspaces::TopLevel(vec![])
+    }
 }
 
 impl AsRef<[String]> for Workspaces {

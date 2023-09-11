@@ -6,7 +6,7 @@ Run without --continue
   \xe2\x80\xa2 Packages in scope: my-app, other-app, some-lib (esc)
   \xe2\x80\xa2 Running build in 3 packages (esc)
   \xe2\x80\xa2 Remote caching disabled (esc)
-  some-lib:build: cache miss, executing 07e73f626f2c6e2c
+  some-lib:build: cache miss, executing 9606fba7eafd8728
   some-lib:build: 
   some-lib:build: > build
   some-lib:build: > exit 2
@@ -16,14 +16,8 @@ Run without --continue
   some-lib:build: npm ERR!   in workspace: some-lib 
   some-lib:build: npm ERR!   at location: (.*)/apps/some-lib  (re)
   some-lib:build: ERROR: command finished with error: command \((.*)/apps/some-lib\) npm run build exited \(1\) (re)
-  some-lib#build: command \((.*)/apps/some-lib\) npm run build exited \(1\) (re)
-  
-   Tasks:    0 successful, 1 total
-  Cached:    0 cached, 1 total
-    Time:\s*[\.0-9]+m?s  (re)
-  Failed:    some-lib#build
-  
-   ERROR  run failed: command  exited (1)
+   ERROR  run failed: task hashes differ between Rust and Go: rust map[my-app#build:4b41cd5e472e5531 other-app#build:ec749425edf078f1 some-lib#build:9606fba7eafd8728] go map[some-lib#build:9606fba7eafd8728]
+  Turbo error: task hashes differ between Rust and Go: rust map[my-app#build:4b41cd5e472e5531 other-app#build:ec749425edf078f1 some-lib#build:9606fba7eafd8728] go map[some-lib#build:9606fba7eafd8728]
   [1]
 
 Run without --continue, and with only errors.
@@ -31,7 +25,7 @@ Run without --continue, and with only errors.
   \xe2\x80\xa2 Packages in scope: my-app, other-app, some-lib (esc)
   \xe2\x80\xa2 Running build in 3 packages (esc)
   \xe2\x80\xa2 Remote caching disabled (esc)
-  some-lib:build: cache miss, executing 07e73f626f2c6e2c
+  some-lib:build: cache miss, executing 9606fba7eafd8728
   some-lib:build: 
   some-lib:build: > build
   some-lib:build: > exit 2
@@ -41,14 +35,8 @@ Run without --continue, and with only errors.
   some-lib:build: npm ERR!   in workspace: some-lib 
   some-lib:build: npm ERR!   at location: (.*)/apps/some-lib  (re)
   some-lib:build: ERROR: command finished with error: command \((.*)/apps/some-lib\) npm run build exited \(1\) (re)
-  some-lib#build: command \((.*)/apps/some-lib\) npm run build exited \(1\) (re)
-  
-   Tasks:    0 successful, 1 total
-  Cached:    0 cached, 1 total
-    Time:\s*[\.0-9]+m?s  (re)
-  Failed:    some-lib#build
-  
-   ERROR  run failed: command  exited (1)
+   ERROR  run failed: task hashes differ between Rust and Go: rust map[my-app#build:4b41cd5e472e5531 other-app#build:ec749425edf078f1 some-lib#build:9606fba7eafd8728] go map[some-lib#build:9606fba7eafd8728]
+  Turbo error: task hashes differ between Rust and Go: rust map[my-app#build:4b41cd5e472e5531 other-app#build:ec749425edf078f1 some-lib#build:9606fba7eafd8728] go map[some-lib#build:9606fba7eafd8728]
   [1]
 
 Run with --continue
@@ -56,7 +44,7 @@ Run with --continue
   \xe2\x80\xa2 Packages in scope: my-app, other-app, some-lib (esc)
   \xe2\x80\xa2 Running build in 3 packages (esc)
   \xe2\x80\xa2 Remote caching disabled (esc)
-  some-lib:build: cache miss, executing 07e73f626f2c6e2c
+  some-lib:build: cache miss, executing 9606fba7eafd8728
   some-lib:build: 
   some-lib:build: > build
   some-lib:build: > exit 2
@@ -66,7 +54,7 @@ Run with --continue
   some-lib:build: npm ERR!   in workspace: some-lib 
   some-lib:build: npm ERR!   at location: (.*)/apps/some-lib  (re)
   some-lib:build: command finished with error, but continuing...
-  other-app:build: cache miss, executing 2f40356243966a58
+  other-app:build: cache miss, executing ec749425edf078f1
   other-app:build: 
   other-app:build: > build
   other-app:build: > exit 3

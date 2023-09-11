@@ -154,10 +154,11 @@ impl<'a> Visitor<'a> {
                     .task_cache(task_definition, workspace_dir, info.clone(), &task_hash);
 
             tasks.push(tokio::spawn(async move {
-                println!(
-                    "Executing {info}: {}",
-                    command.as_deref().unwrap_or("no script def")
-                );
+                // Commented out for now because of integration tests
+                // println!(
+                //     "Executing {info}: {}",
+                //     command.as_deref().unwrap_or("no script def")
+                // );
                 let _task_cache = task_cache;
                 callback.send(Ok(())).unwrap();
             }));

@@ -31,7 +31,7 @@ where
 
         let buf = message.get_segments_for_output()[0];
 
-        let mut hasher = twox_hash::XxHash64::with_seed(0);
+        let mut hasher = twox_hash::XxHash64::default();
         hasher.write(buf);
         let out = hasher.finish();
 
