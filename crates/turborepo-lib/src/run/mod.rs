@@ -361,6 +361,8 @@ impl<'a> Run<'a> {
             &self.base.repo_root,
         )?;
 
+        //println!("rust package inputs hashes: {:#?}", package_inputs_hashes);
+
         let pkg_dep_graph = Arc::new(pkg_dep_graph);
         let engine = Arc::new(engine);
 

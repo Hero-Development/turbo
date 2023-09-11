@@ -292,15 +292,27 @@ impl PackageManager {
         &self,
         root_path: &AbsoluteSystemPath,
     ) -> Result<WorkspaceGlobs, Error> {
-        let (mut inclusions, mut exclusions) = self.get_configured_workspace_globs(root_path)?;
-        exclusions.extend(self.get_default_exclusions());
+        let mut exclusions: Vec<_> = self.get_default_exclusions().collect();
+
+        let mut inclusions = match self.get_configured_workspace_globs(root_path) {
+            Ok((configured_inclusions, mut configured_exclusions)) => {
+                exclusions.append(&mut configured_exclusions);
+                configured_inclusions
+            }
+            // We may be in single package mode, so catch this error and return default exclusions
+            Err(Error::Workspace(_)) => {
+                return Ok(WorkspaceGlobs::new(vec![], exclusions)?);
+            }
+            Err(e) => return Err(e),
+        };
 
         // Yarn appends node_modules to every other glob specified
         if *self == PackageManager::Yarn {
             inclusions
-                .iter_mut()
+                .iter()
                 .for_each(|inclusion| exclusions.push(format!("{inclusion}/node_modules/**")));
         }
+
         let globs = WorkspaceGlobs::new(inclusions, exclusions)?;
         Ok(globs)
     }

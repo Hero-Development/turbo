@@ -13,6 +13,7 @@ use crate::{
     cli::EnvMode,
     hash::{GlobalHashable, TurboHash},
     package_graph::WorkspaceInfo,
+    package_manager,
     package_manager::PackageManager,
 };
 
@@ -65,7 +66,13 @@ pub fn get_global_hash_inputs<'a, L: ?Sized + Lockfile>(
     let mut global_deps = HashSet::new();
 
     if !global_file_dependencies.is_empty() {
-        let globs = package_manager.get_workspace_globs(root_path)?;
+        let globs = match package_manager.get_workspace_globs(root_path) {
+            Ok(globs) => globs,
+            Err(_) => {
+                debug!("no workspace globs found");
+                return Ok(GlobalHashableInputs::default());
+            }
+        };
 
         let files = globwalk::globwalk(
             root_path,
@@ -158,11 +165,6 @@ impl<'a> GlobalHashableInputs<'a> {
             framework_inference: self.framework_inference,
             dot_env: self.dot_env,
         };
-
-        println!(
-            "rust global hashable: {}",
-            serde_json::to_string_pretty(&global_hashable).unwrap()
-        );
 
         global_hashable.hash()
     }

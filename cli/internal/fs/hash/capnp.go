@@ -10,7 +10,6 @@ package hash
 
 import (
 	"encoding/hex"
-	"fmt"
 	"sort"
 
 	capnp "capnproto.org/go/capnp/v3"
@@ -290,7 +289,6 @@ func HashGlobalHashable(global *GlobalHashable) (string, error) {
 		return "", err
 	}
 	msg := globalMsg.Message()
-	fmt.Printf("msg: %+v\n", msg)
 
 	return HashMessage(msg)
 }
