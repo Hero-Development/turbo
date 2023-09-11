@@ -163,7 +163,7 @@ impl Run {
                 .collect(),
         ))
         .with_tasks_only(opts.run_opts.only)
-        .with_workspaces(filtered_pkgs.iter().collect())
+        .with_workspaces(filtered_pkgs.iter().map(|name| name.clone()).collect())
         .with_tasks(
             opts.run_opts
                 .tasks

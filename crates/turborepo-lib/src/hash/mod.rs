@@ -406,22 +406,24 @@ mod test {
 
     #[test]
     fn global_hashable() {
+        let global_file_hash_map = vec![(
+            turbopath::RelativeUnixPathBuf::new("global_file_hash_map").unwrap(),
+            "global_file_hash_map".to_string(),
+        )]
+        .into_iter()
+        .collect();
+
         let global_hash = GlobalHashable {
             global_cache_key: "global_cache_key",
-            global_file_hash_map: vec![(
-                turbopath::RelativeUnixPathBuf::new("global_file_hash_map").unwrap(),
-                "global_file_hash_map".to_string(),
-            )]
-            .into_iter()
-            .collect(),
-            root_external_dependencies_hash: "0000000000000000".to_string(),
-            env: vec!["env".to_string()],
+            global_file_hash_map: &global_file_hash_map,
+            root_external_dependencies_hash: "0000000000000000",
+            env: &["env".to_string()],
             resolved_env_vars: vec![],
-            pass_through_env: vec!["pass_through_env".to_string()],
+            pass_through_env: &["pass_through_env".to_string()],
             env_mode: EnvMode::Infer,
             framework_inference: true,
 
-            dot_env: vec![turbopath::RelativeUnixPathBuf::new("dotenv".to_string()).unwrap()],
+            dot_env: &[turbopath::RelativeUnixPathBuf::new("dotenv".to_string()).unwrap()],
         };
 
         assert_eq!(global_hash.hash(), "c0ddf8138bd686e8");
