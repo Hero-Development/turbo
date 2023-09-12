@@ -153,7 +153,7 @@ impl<'a> GlobalHashableInputs<'a> {
     fn calculate_global_hash(self) -> String {
         let global_hashable = GlobalHashable {
             global_cache_key: self.global_cache_key,
-            global_file_hash_map: self.global_file_hash_map,
+            global_file_hash_map: BTreeMap::new(), //self.global_file_hash_map,
             root_external_dependencies_hash: self.root_external_dependencies_hash,
             env: self.env,
             resolved_env_vars: self
@@ -165,6 +165,11 @@ impl<'a> GlobalHashableInputs<'a> {
             framework_inference: self.framework_inference,
             dot_env: self.dot_env,
         };
+
+        println!(
+            "global_hashable: {}",
+            serde_json::to_string_pretty(&global_hashable).unwrap()
+        );
 
         global_hashable.hash()
     }

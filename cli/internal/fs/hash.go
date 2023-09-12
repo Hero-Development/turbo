@@ -3,7 +3,9 @@ package fs
 import (
 	"crypto/sha1"
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
+	"github.com/vercel/turbo/cli/internal/env"
 	"io"
 	"strconv"
 
@@ -37,6 +39,19 @@ func HashTask(task *hash.TaskHashable) (string, error) {
 
 // HashGlobal produces the global hash value to be incorporated in every task hash
 func HashGlobal(global hash.GlobalHashable) (string, error) {
+	global.GlobalFileHashMap = map[turbopath.AnchoredUnixPath]string{}
+	if global.ResolvedEnvVars == nil {
+		global.ResolvedEnvVars = env.EnvironmentVariablePairs{}
+	}
+	if global.PassThroughEnv == nil {
+		global.PassThroughEnv = []string{}
+	}
+	if global.DotEnv == nil {
+		global.DotEnv = []turbopath.AnchoredUnixPath{}
+	}
+
+	b, _ := json.MarshalIndent(global, "", "  ")
+	fmt.Println(string(b))
 	return hash.HashGlobalHashable(&global)
 }
 

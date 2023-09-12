@@ -10,7 +10,9 @@ package hash
 
 import (
 	"encoding/hex"
+	"fmt"
 	"sort"
+	"strings"
 
 	capnp "capnproto.org/go/capnp/v3"
 	"github.com/vercel/turbo/cli/internal/env"
@@ -384,6 +386,12 @@ func HashMessage(msg *capnp.Message) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
+	bytesStr := make([]string, len(bytes))
+	for i, b := range bytes {
+		bytesStr[i] = fmt.Sprintf("%d", b)
+	}
+	fmt.Printf("go buffer: %v\n", strings.Join(bytesStr, ", "))
 
 	digest := xxhash.New()
 	_, err = digest.Write(bytes)

@@ -31,6 +31,8 @@ where
 
         let buf = message.get_segments_for_output()[0];
 
+        println!("rust buffer: {:?}", buf);
+
         let mut hasher = twox_hash::XxHash64::default();
         hasher.write(buf);
         let out = hasher.finish();
