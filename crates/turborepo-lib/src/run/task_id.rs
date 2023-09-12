@@ -72,6 +72,13 @@ impl<'a> TaskId<'a> {
         &self.package
     }
 
+    pub fn to_workspace_name(&self) -> WorkspaceName {
+        match self.package.as_ref() {
+            ROOT_PKG_NAME => WorkspaceName::Root,
+            package => WorkspaceName::Other(package.into()),
+        }
+    }
+
     pub fn task(&self) -> &str {
         &self.task
     }

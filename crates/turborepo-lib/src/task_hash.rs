@@ -73,10 +73,6 @@ impl PackageInputsHashes {
                     return None;
                 };
 
-                if task_id.package() == ROOT_PKG_NAME {
-                    return None;
-                }
-
                 let task_definition = match task_definitions
                     .get(task_id)
                     .ok_or_else(|| Error::MissingPipelineEntry(task_id.clone()))
@@ -86,7 +82,7 @@ impl PackageInputsHashes {
                 };
 
                 // TODO: Look into making WorkspaceName take a Cow
-                let workspace_name = WorkspaceName::Other(task_id.package().to_string());
+                let workspace_name = task_id.to_workspace_name();
 
                 let pkg = match workspaces
                     .get(&workspace_name)

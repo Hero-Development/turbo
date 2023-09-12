@@ -47,13 +47,13 @@ impl<'a> TryFrom<&'a CommandBase> for ExecutionState<'a> {
 
         let global_hash;
         let task_hash_tracker;
-        #[cfg(debug_assertions)]
+        #[cfg(feature = "rust-hashing")]
         {
             let result = run.get_hashes()?;
             global_hash = Some(result.0);
             task_hash_tracker = Some(result.1);
         }
-        #[cfg(not(debug_assertions))]
+        #[cfg(not(feature = "rust-hashing"))]
         {
             global_hash = None;
             task_hash_tracker = None;

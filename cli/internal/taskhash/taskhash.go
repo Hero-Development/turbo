@@ -169,7 +169,6 @@ func (th *Tracker) CalculateFileHashes(
 		return err
 	}
 	th.PackageInputsHashes = hashes
-	//fmt.Printf("go package inputs hashes: %+v\n", hashes)
 	th.PackageInputsExpandedHashes = hashObjects
 	return nil
 }
