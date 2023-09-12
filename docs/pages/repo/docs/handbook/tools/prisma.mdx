@@ -206,3 +206,25 @@ Check out the section on [running tasks](/repo/docs/core-concepts/monorepos/runn
 However, Prisma behaves differently with different package managers. This can lead to unpredictable results, which might lead to broken deployments in some situations. Instead of documenting the intricacies of each approach, we recommend _not_ caching the results of `prisma generate`. Since `prisma generate` usually only takes 5-6 seconds, and tends not to take longer with larger `schema` files, this seems like a fine trade-off.
 
 You may wish to experiment with this yourself. If you find a solution that you feel works, feel free to [add an issue](https://github.com/vercel/turbo/issues/new/choose) and we can update this section.
+
+## Serverless Bundling
+
+One of the most common challenges deploying Prisma from Turbo is `PrismaClientInitializationError: Prisma Client could not find its 'schema.prisma'.`
+
+This occurs because your executable code expects `schema.prisma` (and other resources) to be found locally, but when your Prisma connection is built from another workspace, these dependencies are often omitted.  There are several ways to address this, and below we've highlighted three specific solutions.
+
+### 1. Layers
+
+When using AWS Lambda and/or Serverless Application Model (SAM), your dependent workspaces can be deployed as layers, and linked to your Lambda function.  
+
+### 2. Prisma Client Output
+
+
+### 3. Package Scripts
+
+
+
+References:
+- https://docs.aws.amazon.com/lambda/latest/dg/adding-layers.html#accessing-layer-content
+- https://www.prisma.io/docs/concepts/components/prisma-client/working-with-prismaclient/generating-prisma-client#the-location-of-prisma-client
+- https://docs.npmjs.com/cli/v10/using-npm/scripts#pre--post-scripts
